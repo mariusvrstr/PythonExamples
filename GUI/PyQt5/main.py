@@ -1,8 +1,10 @@
-import sys
-import PyQt5
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
 
-from PyQt5.QtWidgets import QApplication, QWidget
-
-
-
-
+app = QApplication([])
+window = QWidget()
+layout = QVBoxLayout()
+layout.addWidget(QPushButton('Top'))
+layout.addWidget(QPushButton('Bottom'))
+window.setLayout(layout)
+window.show()
+app.exec()
