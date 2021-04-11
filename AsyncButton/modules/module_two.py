@@ -1,13 +1,31 @@
+from models.counter_summary import CounterSummary
+import random
+import asyncio
 
-
-
-async def start():    
-    sensor_manager.register_available()
-    sensor_manager.start_monitoring()    
+class ModuleTwo():
+    counter_summary = None
+    is_monitoring = False
+    _frequency_in_seconds = 10
     
-    trigger_manager.register_available()
-    device_manager = DeviceManager()
+    def __init__(self, frequency_in_seconds):
+        self.counter_summary = CounterSummary("Module Two")
+        self._frequency_in_seconds = frequency_in_seconds
+        pass
 
-    integration_adapter.start_monitoring(sensor_manager.sensor_list)
+    def get_value(self):
+        random_value = random.randint(0, 50)
 
-    await device_manager.start_device_dashboard(sensor_manager, trigger_manager, integration_adapter) 
+        return random_value
+    
+    def dispose(self):
+        self.is_monitoring = False
+        pass
+
+    async def start_monitoring(self):        
+        self.is_monitoring = True
+
+        while self.is_monitoring:
+            new_value = self.get_value()
+            self.counter_summary.update_value(new_value)
+            await asyncio.sleep(self._frequency_in_seconds)
+        pass

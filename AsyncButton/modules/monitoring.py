@@ -18,7 +18,7 @@ class Monitoring:
         print()
 
         for counter in counter_list:
-            print(f"[{counter.name}] latest value is [{counter.current_value}] - {counter.last_execution}")
+            print(f"[{counter.name}] latest value is [{counter.current_value}] - #{counter.number_of_updates} {counter.last_execution}")
 
         print()
         tic_indicator = "|" if self._show_pipe else "-"
