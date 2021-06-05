@@ -1,5 +1,7 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from time import sleep
+from sensors.sensor_one import SensorOne
+from contracts.counter import Counter
 import asyncio
 
 class BackgroundWorker(QObject):
@@ -9,19 +11,14 @@ class BackgroundWorker(QObject):
 
     async def run_all(self):
         self.enabled = True
-        asyncio.ensure_future(self.run_one())
+
+        counter = Counter("Sensor One")
+        SensorOne(counter)
 
         while True:
+            self.progress.emit(counter.get_value()) ## Can't process complex objects yet
             # Keep main thread alive
-            await asyncio.sleep(2)       
-
-    async def run_one(self):
-        count_sub = 0
-
-        while self.enabled:
-            count_sub += 1
-            self.progress.emit(count_sub)  
-            await asyncio.sleep(1)      
+            await asyncio.sleep(1)
 
     def run(self):
         loop = asyncio.new_event_loop()

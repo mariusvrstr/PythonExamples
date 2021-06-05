@@ -40,8 +40,9 @@ class Window(QMainWindow):
         self.clicksCount += 1
         self.clicksLabel.setText(f"Counting: {self.clicksCount} clicks")
 
-    def reportProgress(self, n):
-        self.stepLabel.setText(f"Long-Running Step: {n}")
+    def reportProgress(self, counter):
+        ## is_list = isinstance(counters, list)
+        self.stepLabel.setText(f"Long-Running Step: {counter}")
 
     def runLongTask(self):
 
@@ -70,9 +71,8 @@ class Window(QMainWindow):
             lambda: self.stepLabel.setText("Long-Running Step: 0")
         )
 
-        #TODO: Find out why button clicks create new threads without closing previous
-
 app = QApplication(sys.argv)
 win = Window()
 win.show()
 sys.exit(app.exec())
+
