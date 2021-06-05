@@ -5,20 +5,30 @@ import asyncio
 class BackgroundWorker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(int)
+    enabled = False
+
+    async def run_all(self):
+        self.enabled = True
+        asyncio.ensure_future(self.run_one())
+
+        while True:
+            # Keep main thread alive
+            await asyncio.sleep(2)       
 
     async def run_one(self):
-        for i in range(15):
-            self.progress.emit(i)  
-            sleep(1)
-            # await asyncio.sleep(1) # Seems like asyncio sleep and threads are not working      
+        count_sub = 0
+
+        while self.enabled:
+            count_sub += 1
+            self.progress.emit(count_sub)  
+            await asyncio.sleep(1)      
 
     def run(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-        try:
-            asyncio.ensure_future(self.run_one())
-            loop.run_until_complete(self.run_one())
+        try:            
+            loop.run_until_complete(self.run_all())
         
         except KeyboardInterrupt:
             print (f'stopped')

@@ -44,6 +44,7 @@ class Window(QMainWindow):
         self.stepLabel.setText(f"Long-Running Step: {n}")
 
     def runLongTask(self):
+
         # Step 2: Create a QThread object
         self.thread = QThread()
         # Step 3: Create a worker object
@@ -56,6 +57,7 @@ class Window(QMainWindow):
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.progress.connect(self.reportProgress)
+
         # Step 6: Start the thread
         self.thread.start()
 
@@ -67,6 +69,8 @@ class Window(QMainWindow):
         self.thread.finished.connect(
             lambda: self.stepLabel.setText("Long-Running Step: 0")
         )
+
+        #TODO: Find out why button clicks create new threads without closing previous
 
 app = QApplication(sys.argv)
 win = Window()
