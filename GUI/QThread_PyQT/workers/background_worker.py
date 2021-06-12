@@ -22,10 +22,7 @@ class BackgroundWorker(QObject):
         asyncio.ensure_future(self.AlphaProcess(counter_alpha))        
         asyncio.ensure_future(self.BravoProcess(counter_bravo))
 
-        while True:            
-            for counter in self.counters:
-                self.progress.emit(counter)
-
+        while True:  
             # Keep main thread alive
             await asyncio.sleep(1)
 
@@ -35,6 +32,7 @@ class BackgroundWorker(QObject):
 
         while self.enabled:
             counter.incriment()
+            self.progress.emit(counter)
             await asyncio.sleep(frequency)
 
         
@@ -43,6 +41,7 @@ class BackgroundWorker(QObject):
 
         while self.enabled:
             counter.incriment()
+            self.progress.emit(counter)
             await asyncio.sleep(frequency)
 
 
