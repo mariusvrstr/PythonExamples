@@ -2,13 +2,14 @@ from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from time import sleep
 from sensors.sensor_one import SensorOne
 from contracts.counter import Counter
+import os
 import asyncio
 
 class BackgroundWorker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(Counter)
     enabled = False
-    counters = []
+    counters = []    
 
     async def run_all(self):
         self.enabled = True
@@ -20,11 +21,21 @@ class BackgroundWorker(QObject):
         self.counters.append(counter_bravo)
 
         asyncio.ensure_future(self.AlphaProcess(counter_alpha))        
-        asyncio.ensure_future(self.BravoProcess(counter_bravo))
+        asyncio.ensure_future(self.BravoProcess(counter_bravo))        
 
         while True:  
+            os.system('cls')
+            print('Sensors')
+            print('-----------------------------')
+
+            for counter in self.counters:
+                print(f"Name = [{counter.name}], Value = [{counter.get_value()}]")
+            
+            print()
             # Keep main thread alive
             await asyncio.sleep(1)
+        
+        os.system('cls')
 
 
     async def AlphaProcess(self, counter):
