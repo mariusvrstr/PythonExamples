@@ -6,21 +6,47 @@ import asyncio
 
 class BackgroundWorker(QObject):
     finished = pyqtSignal()
-    progress = pyqtSignal(int)
+    progress = pyqtSignal(Counter)
     enabled = False
+    counters = []
 
     async def run_all(self):
         self.enabled = True
 
-        counter = Counter("Sensor One")
-        SensorOne(counter)
+        counter_alpha = Counter("Alpha Sensor")
+        self.counters.append(counter_alpha)
 
-        while True:
-            self.progress.emit(counter.get_value()) ## Can't process complex objects yet
+        counter_bravo = Counter("Bravo Sensor")   
+        self.counters.append(counter_bravo)
+
+        asyncio.ensure_future(self.AlphaProcess(counter_alpha))        
+        asyncio.ensure_future(self.BravoProcess(counter_bravo))
+
+        while True:            
+            for counter in self.counters:
+                self.progress.emit(counter)
+
             # Keep main thread alive
             await asyncio.sleep(1)
 
-    def run(self):
+
+    async def AlphaProcess(self, counter):
+        frequency = 1
+
+        while self.enabled:
+            counter.incriment()
+            await asyncio.sleep(frequency)
+
+        
+    async def BravoProcess(self, counter):
+        frequency = 3
+
+        while self.enabled:
+            counter.incriment()
+            await asyncio.sleep(frequency)
+
+
+    def run(self): 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 

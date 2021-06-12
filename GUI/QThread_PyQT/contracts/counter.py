@@ -11,7 +11,7 @@ class Counter():
     def set(self, value):
         self.raw = value
 
-    def incriment(self, value):
+    def incriment(self, value = 1):
         self.raw += value
 
     def get_value(self):

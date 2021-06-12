@@ -13,6 +13,26 @@ class Window(QMainWindow):
         self.clicksCount = 0
         self.setupUi()
 
+    sensors = []
+
+    def update_sensors(self, counter):
+        found = False
+
+        for k in range(len(self.sensors)):
+            if counter.name == self.sensors[k].name:
+                self.sensors[k] = counter
+                found = True
+
+        if not found:
+            self.sensors.append(counter)
+
+        sensor_message = ""
+        for sensor in self.sensors:
+            sensor_message += f"{sensor.name} = [{sensor.get_value()}] "
+
+        return sensor_message
+
+
     def setupUi(self):
         self.setWindowTitle("Freezing GUI")
         self.resize(300, 150)
@@ -41,8 +61,8 @@ class Window(QMainWindow):
         self.clicksLabel.setText(f"Counting: {self.clicksCount} clicks")
 
     def reportProgress(self, counter):
-        ## is_list = isinstance(counters, list)
-        self.stepLabel.setText(f"Long-Running Step: {counter}")
+        output = self.update_sensors(counter)
+        self.stepLabel.setText(f"Long-Running Step: {output}")
 
     def runLongTask(self):
 
